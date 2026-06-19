@@ -1,137 +1,77 @@
 <!DOCTYPE html>
-<html lang="fr" class="bg-[#0B0F19] text-slate-200 antialiased font-sans">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NetSentinel - Network Audit Dashboard</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            dark: '#0B0F19',
-                            card: '#161F30',
-                            accent: '#3B82F6',   // Bleu électrique moderne
-                            success: '#10B981',  // Vert data
-                            warning: '#F59E0B',  // Orange alerte moyenne
-                            danger: '#EF4444'    // Rouge alerte critique
-                        }
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.2s ease-out forwards',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(4px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        /* Effet Glassmorphism premium pour les cartes */
-        .glass { 
-            background: rgba(22, 31, 48, 0.6); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(255, 255, 255, 0.04); 
-        }
-    </style>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>NetSentinel - Surveillance Réseau</title>
+    <link rel="stylesheet" href="css/style.css"> 
 </head>
-<body class="h-screen flex overflow-hidden select-none">
+<body>
 
-    <aside class="w-64 bg-[#090D16] border-r border-slate-800/60 flex flex-col justify-between h-full z-20">
-        <div>
-            <div class="h-16 flex items-center px-6 border-b border-slate-800/60 gap-3">
-                <svg class="w-6 h-6 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                </svg>
-                <span class="text-lg font-bold tracking-wider text-white">NET<span class="text-brand-accent">SENTINEL</span></span>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <h2>NetSentinel</h2>
             </div>
-            
-            <nav class="mt-6 px-4 space-y-1">
-                <button data-page="tableau_de_bord" class="nav-link w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path>
-                    </svg>
-                    Tableau de bord
-                </button>
-                
-                <button data-page="applications" class="nav-link w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                    </svg>
-                    Applications
-                </button>
-                
-                <button data-page="alertes" class="nav-link w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 relative">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                    </svg>
-                    Alertes
-                    <span class="absolute right-4 top-4 w-2 h-2 rounded-full bg-brand-danger"></span>
-                </button>
-                
-                <button data-page="rapports" class="nav-link w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    Rapports
-                </button>
+            <nav class="nav-menu">
+                <button onclick="naviguerVers('tableau_de_bord')" class="nav-btn active">Tableau de bord</button>
+                <button onclick="naviguerVers('applications')" class="nav-btn">Applications détections</button>
             </nav>
-        </div>
+        </aside>
 
-        <div class="p-4 border-t border-slate-800/60 flex items-center gap-3 bg-[#070A10]/50">
-            <div class="w-9 h-9 rounded-full bg-brand-accent/10 border border-brand-accent/30 flex items-center justify-center text-brand-accent font-semibold text-sm">
-                TS
-            </div>
-            <div>
-                <p class="text-xs font-medium text-white">Henoch Shungu</p>
-                <p class="text-[10px] text-slate-500">Administrateur</p>
-            </div>
-        </div>
-    </aside>
+        <main class="main-content">
+            <header class="main-header">
+                <h1 id="page-title">Tableau de bord</h1>
+            </header>
 
-    <div class="flex-1 flex flex-col h-full overflow-hidden">
-        
-        <header class="h-16 border-b border-slate-800/60 bg-[#090D16]/80 backdrop-blur-md px-8 flex items-center justify-between z-10">
-            <div class="flex items-center gap-3">
-                <h1 id="page-title" class="text-lg font-semibold text-white tracking-wide">Chargement...</h1>
-                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-slate-500 font-mono">v1.0.0-alpha</span>
-            </div>
-            
-            <div class="flex items-center gap-6">
-                <div class="flex items-center gap-2.5">
-                    <div class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-success opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-success"></span>
+            <div id="content-zone">
+                
+                <section id="view-tableau_de_bord" class="page-view">
+                    <div class="stats-grid">
+                        <div class="card">
+                            <h3>Vitesse Instantanée</h3>
+                            <p id="stat-vitesse">-- Mbps</p>
+                        </div>
+                        <div class="card">
+                            <h3>Volume Total Transité</h3>
+                            <p id="stat-volume">-- GB</p>
+                        </div>
                     </div>
-                    <span class="text-xs text-slate-400 font-medium">Capture Engine : <span class="text-brand-success font-semibold font-mono">ONLINE</span></span>
-                </div>
-                <div class="h-4 w-px bg-slate-800"></div>
-                <button class="text-xs bg-brand-accent hover:bg-blue-600 transition-colors text-white font-medium px-3 py-1.5 rounded-lg shadow-lg shadow-brand-accent/10">
-                    Forcer l'audit
-                </button>
-            </div>
-        </header>
 
-        <main id="content-viewport" class="flex-1 overflow-y-auto p-8 bg-gradient-to-b from-[#0B0F19] to-[#070A10]">
-            </main>
+                    <div class="chart-container">
+                        <h3>Activité en temps réel</h3>
+                        <canvas id="networkChart"></canvas>
+                    </div>
+
+                    <div class="process-section">
+                        <h3>Top Processus Actifs</h3>
+                        <ul id="mini-process-list">
+                            </ul>
+                    </div>
+                </section>
+
+                <section id="view-applications" class="page-view" style="display: none;">
+                    <div class="table-container">
+                        <table id="apps-table">
+                            <thead>
+                                <tr>
+                                    <th>PID</th>
+                                    <th>Application</th>
+                                    <th>Utilisation CPU</th>
+                                    <th>Mémoire Vive</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody id="apps-table-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+        </main>
     </div>
 
-    <script src="js/graphiques.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
